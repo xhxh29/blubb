@@ -10,11 +10,13 @@ class Snake:
         xneu = oldhead[0] + movement[0]
         yneu = oldhead[1] + movement[1]
         head = (xneu, yneu)
-        if not self.board.eat():
+        if not self.board.eat(head):
             del self.position[-1]
         if self.__collision(head):
             self.position.insert(0, head)
             return False
+        self.position.insert(0, head)
+        return True
     def __direction(self, dirnum):
         if dirnum == 0:
             return (-1, 0)

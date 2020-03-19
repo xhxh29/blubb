@@ -1,9 +1,8 @@
 import random
 class Board:
-    def __init__(self, width, height, snake):
+    def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.snake = snake
         self.board = [[BoardState.EMPTY for x in range(width)] for y in range(height)]
         self.__gen_board(30)
     def collide(self, position):
