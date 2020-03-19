@@ -4,12 +4,14 @@ class Snake:
         self.direction = startdir
         self.board = board
     def move(self):
-        del self.position[-1]
+    
         oldhead = self.position[0]
         movement = self.__direction(self.direction)
         xneu = oldhead[0] + movement[0]
         yneu = oldhead[1] + movement[1]
         head = (xneu, yneu)
+        if not self.board.eat():
+            del self.position[-1]
         if self.__collision(head):
             self.position.insert(0, head)
             return False
@@ -24,9 +26,7 @@ class Snake:
             return (0, -1)
     def __collision(self, pos):
         return self.__selfcoll(pos) or self.board.collide(pos)
-
     def __selfcoll(self, pos):
         return pos in self.position
-
-    def __eat(self, foodpos):
-        return False
+    def set_direction(self, dirnum):
+        self.direction = dirnum
