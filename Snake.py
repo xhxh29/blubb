@@ -5,7 +5,8 @@ class Snake:
     def move(self):
         del self.position[-1]
         self.position.insert(0, Head)
-    def __collision(self, colpos)
-    def __eat(self,foodpos)
-        
+    def __collision(self, colpos):
+        return False
+    def __eat(self,foodpos):
+        return False
 
