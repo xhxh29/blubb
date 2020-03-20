@@ -11,7 +11,7 @@ class Board:
     def collide(self, position):
         if self.board[position[0]][position[1]] == BoardState.OBSTACLE:
             return True
-        if self.board[position[0]][position[1]] == BoardState.PORTAL:
+        if self.board[position[0]][position[1]] == BoardState.ENTRY_PORTAL:
             if self.totalfood == 0:
                 self.found_portal = True
                 return False
@@ -33,7 +33,7 @@ class Board:
                     self.board[i][j] = BoardState.OBSTACLE
                     continue
                 if i == 0:
-                    self.board[i][j] = BoardState.PORTAL
+                    self.board[i][j] = BoardState.ENTRY_PORTAL
                     continue
                 if random.randrange(density) == 0:
                     self.board[i][j] = BoardState.FOOD
