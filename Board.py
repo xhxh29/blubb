@@ -11,7 +11,7 @@ class Board:
     def collide(self, position):
         if self.board[position[0]][position[1]] == BoardState.OBSTACLE:
             return True
-        if self.board[position[0]][position[1]] == BoardState.ENTRY_PORTAL:
+        if self.board[position[0]][position[1]] == BoardState.EXIT_PORTAL:
             if self.totalfood == 0:
                 self.found_portal = True
                 return False
@@ -29,17 +29,25 @@ class Board:
     def __gen_board(self, density):
         for i in range(self.width):
             for j in range(self.height):
-                if j == 0 or i == self.width -1 or j == self.height -1:
+                if i == 0 or j == 0 or i == self.width -1 or j == self.height -1:
                     self.board[i][j] = BoardState.OBSTACLE
-                    continue
-                if i == 0:
-                    self.board[i][j] = BoardState.ENTRY_PORTAL
+                    if i == self.width - 1:
+                        self.board[i][j] = BoardState.EXIT_PORTAL
+                    if j == int(self.height / 2) and i == 0:
+                        self.board[i][j] = BoardState.ENTRY_PORTAL
                     continue
                 if random.randrange(density) == 0:
                     self.board[i][j] = BoardState.FOOD
                     self.totalfood = self.totalfood + 1
     def levelwon(self):
         return self.found_portal
+
+    def find_leftmost_entry_portal(self):
+        for i in range(self.width):
+            for j in range(self.height):
+                if self.board[i][j] == BoardState.ENTRY_PORTAL:
+                    return (i,j)
+ 
                 
 
 from enum import Enum

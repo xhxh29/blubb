@@ -1,10 +1,13 @@
 import pygame
+import operator
 from Board import Board
 from Board import BoardState
 from Snake import Snake
+from Snake import direction
 from pygame import Rect
 from pygame import Color
 from pygame import time
+
 
 FOOD_COLOR = Color(255, 0, 0)
 EMPTY_COLOR = Color(0, 0, 0)
@@ -25,9 +28,9 @@ def main():
     while running:
         frame = 0
         if not board is None:
-            board = init_level(difficulty, board.snake.length)
+            board = init_level(difficulty, board.snake.length, board.snake.direction)
         else:
-            board = init_level(difficulty, 1)
+            board = init_level(difficulty, 1, 2)
         clock = time.Clock()
         while running:
             clock.tick(60)
@@ -59,9 +62,11 @@ def handle_keys(board):
                 board.snake.set_direction(3)
 
 
-def init_level(difficulty, snake_length):
+def init_level(difficulty, snake_length, snake_dir):
     board = Board(difficulty*10, difficulty*10)
-    snake = Snake((difficulty * 5, difficulty * 5), 0, board, snake_length)
+    entry_portal_pos = board.find_leftmost_entry_portal()
+    start_pos = tuple(map(operator.add, entry_portal_pos, direction(snake_dir)))
+    snake = Snake(start_pos , snake_dir, board, snake_length)
     board.snake = snake
     snake.speed = max((120./float(difficulty), 1))
     return board
