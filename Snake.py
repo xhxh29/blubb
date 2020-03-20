@@ -3,8 +3,8 @@ class Snake:
         self.position = [startpos]
         self.direction = startdir
         self.board = board
+        self.speed = 60
     def move(self):
-    
         oldhead = self.position[0]
         movement = self.__direction(self.direction)
         xneu = oldhead[0] + movement[0]
