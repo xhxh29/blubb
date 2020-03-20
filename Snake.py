@@ -1,21 +1,22 @@
 class Snake:
-    def __init__(self, startpos, startdir, board):
+    def __init__(self, startpos, startdir, board, length):
         self.position = [startpos]
         self.direction = startdir
         self.board = board
-        self.speed = 60
+        self.length = length
     def move(self):
         oldhead = self.position[0]
         movement = self.__direction(self.direction)
         xneu = oldhead[0] + movement[0]
         yneu = oldhead[1] + movement[1]
         head = (xneu, yneu)
-        if not self.board.eat(head):
+        if not self.board.eat(head) and len(self.position) >= self.length:
             del self.position[-1]
         if self.__collision(head):
             self.position.insert(0, head)
             return False
         self.position.insert(0, head)
+        self.length = self.length + 1
         return True
     def __direction(self, dirnum):
         if dirnum == 0:
