@@ -71,6 +71,13 @@ def init_level(difficulty, snake_length, snake_dir):
     snake.speed = max((120./float(difficulty), 1))
     return board
 
+def rect_from_points(p1, p2):
+    minx = min((p1[0], p2[0]))
+    miny = min((p1[1], p2[1]))
+    maxx = max((p1[0], p2[0]))
+    maxy = max((p1[1], p2[1]))
+    return Rect(minx, miny, maxx-minx, maxy-miny)
+
 
 def draw(board, screen):
     boxwidth = float(SCREEN_WIDTH) / float(board.width)

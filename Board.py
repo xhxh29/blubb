@@ -27,6 +27,21 @@ class Board:
             return True
         return False
     def __gen_board(self, density):
+        i = 0
+        down = True
+        while i < self.width:
+            i += random.randrange(3, 6)
+            if i >= self.width:
+                break
+            length = random.randrange(0, self.height-2)
+            if down:
+                for j in range(length):
+                    self.board[i][j] = BoardState.OBSTACLE
+            else:
+                for j in range(length):
+                    self.board[i][self.height - 1 - j] = BoardState.OBSTACLE
+            down = not down
+
         for i in range(self.width):
             for j in range(self.height):
                 if i == 0 or j == 0 or i == self.width -1 or j == self.height -1:
@@ -36,7 +51,7 @@ class Board:
                     if j == int(self.height / 2) and i == 0:
                         self.board[i][j] = BoardState.ENTRY_PORTAL
                     continue
-                if random.randrange(density) == 0:
+                if random.randrange(density) == 0 and self.board[i][j] == BoardState.EMPTY:
                     self.board[i][j] = BoardState.FOOD
                     self.totalfood = self.totalfood + 1
     def levelwon(self):
