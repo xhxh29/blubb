@@ -10,29 +10,37 @@ FOOD_COLOR = Color(255, 0, 0)
 EMPTY_COLOR = Color(0, 0, 0)
 OBSTACLE_COLOR = Color(100, 100, 100)
 SNAKE_COLOR = Color(0, 255, 0)
+PORTAL_COLOR = Color(0,0,255)
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 
 
 def main():
-    board = Board(10, 10)
-    snake = Snake((5, 5), 0, board)
-    board.snake = snake
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    difficulty = 1
     running = True
-    frame = 0
-    clock = time.Clock()
+    board = None
     while running:
-        clock.tick(60)
-        handle_keys(board)
-        frame = frame + 1
-        screen.fill(EMPTY_COLOR)
-        draw(board, screen)
-        if frame % 15 == 0:
-            if not snake.move():
-                running = False
-        pygame.display.update()
+        frame = 0
+        if not board is None:
+            board = init_level(difficulty, board.snake.length)
+        else:
+            board = init_level(difficulty, 1)
+        clock = time.Clock()
+        while running:
+            clock.tick(60)
+            handle_keys(board)
+            frame = frame + 1
+            screen.fill(EMPTY_COLOR)
+            draw(board, screen)
+            if frame % board.snake.speed == 0:
+                if not board.snake.move():
+                    running = False
+                if board.levelwon():
+                    break
+            pygame.display.update()
+        difficulty += 1
 
 
 def handle_keys(board):
@@ -49,6 +57,14 @@ def handle_keys(board):
             if event.key == pygame.K_UP:
                 board.snake.set_direction(3)
 
+
+def init_level(difficulty, snake_length):
+    board = Board(difficulty*10, difficulty*10)
+    snake = Snake((difficulty * 5, difficulty * 5), 0, board, snake_length)
+    board.snake = snake
+    snake.speed = max((120./float(difficulty), 1))
+    return board
+
 def draw(board, screen):
     boxwidth = float(SCREEN_WIDTH) / float(board.width)
     boxheight = float(SCREEN_HEIGHT) / float(board.height)
@@ -59,6 +75,9 @@ def draw(board, screen):
                     i*boxwidth, j*boxheight, boxwidth, boxheight))
             if board.board[i][j] == BoardState.FOOD:
                 pygame.draw.rect(screen, FOOD_COLOR, Rect(
+                    i*boxwidth, j*boxheight, boxwidth, boxheight))
+            if board.board[i][j] == BoardState.PORTAL:
+                pygame.draw.rect(screen, PORTAL_COLOR, Rect(
                     i*boxwidth, j*boxheight, boxwidth, boxheight))
     for pos in board.snake.position:
         pygame.draw.rect(screen, SNAKE_COLOR, Rect(
