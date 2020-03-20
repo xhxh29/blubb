@@ -10,7 +10,8 @@ FOOD_COLOR = Color(255, 0, 0)
 EMPTY_COLOR = Color(0, 0, 0)
 OBSTACLE_COLOR = Color(100, 100, 100)
 SNAKE_COLOR = Color(0, 255, 0)
-PORTAL_COLOR = Color(0,0,255)
+ENTRY_PORTAL_COLOR = Color(0, 0, 255)
+EXIT_PORTAL_COLOR = Color(0, 0, 127)
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 
@@ -65,6 +66,7 @@ def init_level(difficulty, snake_length):
     snake.speed = max((120./float(difficulty), 1))
     return board
 
+
 def draw(board, screen):
     boxwidth = float(SCREEN_WIDTH) / float(board.width)
     boxheight = float(SCREEN_HEIGHT) / float(board.height)
@@ -76,8 +78,11 @@ def draw(board, screen):
             if board.board[i][j] == BoardState.FOOD:
                 pygame.draw.rect(screen, FOOD_COLOR, Rect(
                     i*boxwidth, j*boxheight, boxwidth, boxheight))
-            if board.board[i][j] == BoardState.PORTAL:
-                pygame.draw.rect(screen, PORTAL_COLOR, Rect(
+            if board.board[i][j] == BoardState.ENTRY_PORTAL:
+                pygame.draw.rect(screen, ENTRY_PORTAL_COLOR, Rect(
+                    i*boxwidth, j*boxheight, boxwidth, boxheight))
+            if board.board[i][j] == BoardState.EXIT_PORTAL:
+                pygame.draw.rect(screen, EXIT_PORTAL_COLOR, Rect(
                     i*boxwidth, j*boxheight, boxwidth, boxheight))
     for pos in board.snake.position:
         pygame.draw.rect(screen, SNAKE_COLOR, Rect(

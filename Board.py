@@ -47,4 +47,5 @@ class BoardState(Enum):
     EMPTY = 0
     OBSTACLE = 1
     FOOD = 2
-    PORTAL = 3
+    ENTRY_PORTAL = 3
+    EXIT_PORTAL = 4
