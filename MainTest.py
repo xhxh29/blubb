@@ -7,12 +7,14 @@ from Snake import direction
 from pygame import Rect
 from pygame import Color
 from pygame import time
+from pygame import display
 
 
 FOOD_COLOR = Color(255, 0, 0)
 EMPTY_COLOR = Color(0, 0, 0)
 OBSTACLE_COLOR = Color(100, 100, 100)
 SNAKE_COLOR = Color(0, 255, 0)
+SNAKE_EYE_COLOR = Color (0, 0, 0)
 ENTRY_PORTAL_COLOR = Color(0, 0, 255)
 EXIT_PORTAL_COLOR = Color(0, 0, 127)
 SCREEN_WIDTH = 1000
@@ -21,7 +23,13 @@ SCREEN_HEIGHT = 1000
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    displayinfo = pygame.display.Info()
+    sizedisplay = int(min((displayinfo.current_w, displayinfo.current_h)) * 4/5)
+    global SCREEN_HEIGHT
+    global SCREEN_WIDTH
+    SCREEN_HEIGHT = sizedisplay
+    SCREEN_WIDTH = sizedisplay
+    screen = pygame.display.set_mode((sizedisplay, sizedisplay))
     difficulty = 1
     running = True
     board = None
@@ -99,6 +107,26 @@ def draw(board, screen):
     for pos in board.snake.position:
         pygame.draw.rect(screen, SNAKE_COLOR, Rect(
             pos[0]*boxwidth, pos[1]*boxheight, boxwidth, boxheight))
+
+    pos = board.snake.position[0]
+    lefteyep1 = head_to_world(board.snake, (-0.3, -0.3), boxwidth, boxheight)
+    lefteyep2 = head_to_world(board.snake, (-0.0, -0.1), boxwidth, boxheight)
+    righteyep1 = head_to_world(board.snake, (-0.3, 0.3), boxwidth, boxheight)
+    righteyep2 = head_to_world(board.snake, (-0.0, 0.1), boxwidth, boxheight)
+    pygame.draw.ellipse(screen, SNAKE_EYE_COLOR, rect_from_points(righteyep1, righteyep2))
+    pygame.draw.ellipse(screen, SNAKE_EYE_COLOR, rect_from_points(lefteyep1, lefteyep2))
+def head_to_world(snake, uv, boxwidth, boxheight):
+    grid = (boxwidth, boxheight)
+    headpos = add(multi(grid, snake.position[0]), (boxwidth * 0.5, boxheight * 0.5))
+    uvkoord = add(multfloat(direction(snake.direction %4), uv[0]), multfloat(direction((snake.direction + 1)%4), uv[1]))
+    uvkoord = multi(uvkoord, grid)
+    return add(headpos, uvkoord)
+def add(vec1, vec2):
+    return (vec1[0] + vec2[0], vec1[1] + vec2[1])
+def multi(vec1, vec2):
+    return(vec1[0] * vec2[0], vec1[1] * vec2[1])
+def multfloat(vec1, komma):
+    return(vec1[0] * komma, vec1[1] * komma)
 
 
 main()
