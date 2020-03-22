@@ -117,6 +117,10 @@ def init_level(difficulty, snake_length, snake_dir):
 
     entry_portal_pos = board.find_leftmost_entry_portal()
     start_pos = tuple(map(operator.add, entry_portal_pos, direction(snake_dir)))
+    if board.board[start_pos[0]][start_pos[1]] == BoardState.FOOD:
+        snake_length += 1
+        board.board[start_pos[0]][start_pos[1]] = BoardState.EMPTY
+        board.totalfood -= 1
     snake = Snake(start_pos, snake_dir, board, snake_length)
     board.snake = snake
     snake.speed = max((120./float(difficulty), 1))
