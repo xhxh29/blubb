@@ -61,9 +61,8 @@ class Board:
         for i in range(self.width):
             for j in range(self.height):
                 if self.board[i][j] == BoardState.ENTRY_PORTAL:
-                    return (i,j)
- 
-                
+                    return (i, j)
+
 
 from enum import Enum
 class BoardState(Enum):

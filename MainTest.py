@@ -14,9 +14,12 @@ FOOD_COLOR = Color(255, 0, 0)
 EMPTY_COLOR = Color(0, 0, 0)
 OBSTACLE_COLOR = Color(100, 100, 100)
 SNAKE_COLOR = Color(0, 255, 0)
-SNAKE_EYE_COLOR = Color (0, 0, 0)
+SNAKE_EYE_COLOR = Color(0, 0, 0)
+SNAKE_NOSE_COLOR = Color(0, 0, 0)
+SNAKE_TONGUE_COLOR = Color(255, 0, 0)
 ENTRY_PORTAL_COLOR = Color(0, 0, 255)
 EXIT_PORTAL_COLOR = Color(0, 0, 127)
+LEVEL_DISPLAY_COLOR = Color(255, 255, 255)
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 
@@ -46,6 +49,7 @@ def main():
             frame = frame + 1
             screen.fill(EMPTY_COLOR)
             draw(board, screen)
+            leveldisplay(screen, difficulty)
             if frame % board.snake.speed == 0:
                 if not board.snake.move():
                     running = False
@@ -74,7 +78,7 @@ def init_level(difficulty, snake_length, snake_dir):
     board = Board(difficulty*10, difficulty*10)
     entry_portal_pos = board.find_leftmost_entry_portal()
     start_pos = tuple(map(operator.add, entry_portal_pos, direction(snake_dir)))
-    snake = Snake(start_pos , snake_dir, board, snake_length)
+    snake = Snake(start_pos, snake_dir, board, snake_length)
     board.snake = snake
     snake.speed = max((120./float(difficulty), 1))
     return board
@@ -115,6 +119,25 @@ def draw(board, screen):
     righteyep2 = head_to_world(board.snake, (-0.0, 0.1), boxwidth, boxheight)
     pygame.draw.ellipse(screen, SNAKE_EYE_COLOR, rect_from_points(righteyep1, righteyep2))
     pygame.draw.ellipse(screen, SNAKE_EYE_COLOR, rect_from_points(lefteyep1, lefteyep2))
+    leftnosep1 = head_to_world(board.snake, (0.3, -0.1), boxwidth, boxheight)
+    leftnosep2 = head_to_world(board.snake, (0.25, -0.05), boxwidth, boxheight)
+    rightnosep1 = head_to_world(board.snake, (0.3, 0.1), boxwidth, boxheight)
+    rightnosep2 = head_to_world(board.snake, (0.25, 0.05), boxwidth, boxheight)
+    pygame.draw.ellipse(screen, SNAKE_NOSE_COLOR, rect_from_points(rightnosep1, rightnosep2))
+    pygame.draw.ellipse(screen, SNAKE_NOSE_COLOR, rect_from_points(leftnosep1, leftnosep2))
+    tonguep1 = head_to_world(board.snake, (0.5, 0), boxwidth, boxheight)
+    tonguep2 = head_to_world(board.snake, (0.7, 0), boxwidth, boxheight)
+    tonguep3 = head_to_world(board.snake, (0.8, 0.1), boxwidth, boxheight)
+    tonguep4 = head_to_world(board.snake, (0.8, -0.1), boxwidth, boxheight)
+    pygame.draw.line(screen, SNAKE_TONGUE_COLOR, tonguep1, tonguep2, 3)
+    pygame.draw.line(screen, SNAKE_TONGUE_COLOR, tonguep2, tonguep3, 3)
+    pygame.draw.line(screen, SNAKE_TONGUE_COLOR, tonguep2, tonguep4, 3)
+
+def leveldisplay(screen, difficulty):
+    font = pygame.font.SysFont("Times New Roman", 20)
+    level = font.render("Level: " + str(difficulty), 1, LEVEL_DISPLAY_COLOR)
+    screen.blit(level, (1, 1))
+
 def head_to_world(snake, uv, boxwidth, boxheight):
     grid = (boxwidth, boxheight)
     headpos = add(multi(grid, snake.position[0]), (boxwidth * 0.5, boxheight * 0.5))
