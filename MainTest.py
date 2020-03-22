@@ -58,6 +58,40 @@ def main():
             pygame.display.update()
         difficulty += 1
 
+def import_board(difficulty, file):
+    x = 0
+    y = 0
+    charmap = {
+        ' ':BoardState.EMPTY,
+        'O':BoardState.OBSTACLE,
+        'F':BoardState.FOOD,
+        'N':BoardState.ENTRY_PORTAL,
+        'X':BoardState.EXIT_PORTAL
+    }
+    width = 0
+    height = 0
+    for line in file:
+        width = max((len(line) - 1, width))
+        height += 1
+    size = max((width, height))
+
+    board = Board(0,0)
+    board.board = [[BoardState.EMPTY for x in range(size)] for y in range(size)]
+    board.width = size
+    board.height = size
+    file.seek(0)
+    for line in file:
+        x = 0
+        for character in line.rstrip():
+            board.board[x][y] = charmap[character]
+            board.print_board(charmap)
+            if board.board[x][y] == BoardState.FOOD:
+                board.totalfood += 1
+            x += 1
+        print()
+        y += 1
+    board.print_board(charmap)
+    return board
 
 def handle_keys(board):
     for event in pygame.event.get():
@@ -75,7 +109,12 @@ def handle_keys(board):
 
 
 def init_level(difficulty, snake_length, snake_dir):
-    board = Board(difficulty*10, difficulty*10)
+    try:
+        file = open("lvl" + str(difficulty))
+        board = import_board(difficulty, file)
+    except IOError:
+        board = Board(difficulty * 10, difficulty* 10)
+
     entry_portal_pos = board.find_leftmost_entry_portal()
     start_pos = tuple(map(operator.add, entry_portal_pos, direction(snake_dir)))
     snake = Snake(start_pos, snake_dir, board, snake_length)

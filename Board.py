@@ -62,6 +62,11 @@ class Board:
             for j in range(self.height):
                 if self.board[i][j] == BoardState.ENTRY_PORTAL:
                     return (i, j)
+    def print_board(self,charmap):
+        for i in range(self.width):
+            for j in range(self.height):
+                print(str(self.board[j][i]) + "  ", end='')
+            print()
 
 
 from enum import Enum
